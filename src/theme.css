@@ -1,0 +1,42 @@
+/* Every color and the font live here. Change crm.config.ts and these follow. */
+:root {
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --bg: #1c1d21;
+  --surface: #27282e;
+  --text: #f4f5f7;
+  --muted: #9aa0aa;
+  --border: #3a3b43;
+  --accent: #2e78ef;
+  --accent-text: #ffffff;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #22c55e;
+  --radius: 10px;
+  --surface-2: #2f3037;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}

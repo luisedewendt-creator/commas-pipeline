@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: commas-pipeline
+    runtime: node
+    plan: free
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    envVars:
+      - key: APP_PASSWORD
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: XAI_API_KEY
+        sync: false
+      - key: NODE_ENV
+        value: production
