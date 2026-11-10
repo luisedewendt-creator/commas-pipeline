@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import type { IncomingMessage } from "node:http";
 import type { NextFunction, Request, Response } from "express";
 
@@ -6,13 +6,13 @@ export const SESSION_COOKIE = "cp_session";
 const MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
 
 export function authEnabled(): boolean {
-  return Boolean(process.env.APP_PASSWORD);
+  return Boolean(process.env.APP_PASSWORD || process.env.APP_PASSWORD_SHA256);
 }
 
 export function assertProductionAuth() {
   if (process.env.NODE_ENV !== "production") return;
-  if (!process.env.APP_PASSWORD) {
-    console.error("APP_PASSWORD is required in production.");
+  if (!authEnabled()) {
+    console.error("APP_PASSWORD or APP_PASSWORD_SHA256 is required in production.");
     process.exit(1);
   }
   if (!process.env.SESSION_SECRET) {
@@ -22,6 +22,13 @@ export function assertProductionAuth() {
 }
 
 export function passwordsMatch(provided: string): boolean {
+  const hash = (process.env.APP_PASSWORD_SHA256 ?? "").trim().toLowerCase();
+  if (hash) {
+    const got = createHash("sha256").update(provided).digest();
+    const want = Buffer.from(hash, "hex");
+    if (provided.length === 0 || want.length !== got.length) return false;
+    return timingSafeEqual(got, want);
+  }
   const expected = process.env.APP_PASSWORD ?? "";
   const a = Buffer.from(provided);
   const b = Buffer.from(expected);
